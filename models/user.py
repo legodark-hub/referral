@@ -2,6 +2,7 @@ from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from models.base import Base
 from utils.custom_types import created_at, updated_at
+from models.referral_code import ReferralCode
 
 
 class User(Base):
@@ -11,7 +12,9 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    referral_code: Mapped[str] = mapped_column(String(6), unique=True, nullable=True)
+    referral_code: Mapped["ReferralCode"] = relationship(
+        "ReferralCode", back_populates="user", uselist=False
+    )
     referrer_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("users.id"), nullable=True
     )
