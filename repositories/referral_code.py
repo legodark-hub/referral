@@ -20,6 +20,12 @@ class ReferralCodeRepository(SQLAlchemyRepository):
         self.session.add(referral_code)
         await self.session.flush()
         return referral_code
+    
+    async def update(self, referral_code: ReferralCode, update_data: dict) -> ReferralCode:
+        for key, value in update_data.items():
+            setattr(referral_code, key, value)
+        await self.session.flush()
+        return referral_code
 
     async def delete(self, referral_code: ReferralCode) -> None:
         await self.session.delete(referral_code)
