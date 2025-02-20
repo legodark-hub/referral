@@ -4,12 +4,14 @@ from types import TracebackType
 from typing import Any
 
 from database.database import async_session
-from repositories.trade import TradeRepository
+from repositories.user import UserRepository
+from repositories.referral_code import ReferralCodeRepository
 from utils.custom_types import AsyncFunc
 
 
 class AbstractUnitOfWork(ABC):
-    trade: TradeRepository
+    user: UserRepository
+    referral_code: ReferralCodeRepository
 
     @abstractmethod
     def __init__(self):
@@ -43,7 +45,8 @@ class UnitOfWork(AbstractUnitOfWork):
 
     async def __aenter__(self) -> None:
         self.session = self.session_factory()
-        self.trade = TradeRepository(self.session)
+        self.user = UserRepository(self.session)
+        self.referral_code = ReferralCodeRepository(self.session)
 
     async def __aexit__(
         self,
