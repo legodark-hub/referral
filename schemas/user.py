@@ -4,10 +4,10 @@ from datetime import datetime
 
 class UserBase(BaseModel):
     email: EmailStr
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str = Field(min_length=3, max_length=50)
 
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=6)
+    password: str = Field(min_length=6)
     referral_code: Optional[str] = None
 
 class UserLogin(BaseModel):
@@ -17,12 +17,10 @@ class UserLogin(BaseModel):
 class UserResponse(UserBase):
     id: int
     created_at: datetime
-    referral_code: str
     referred_by: Optional[str] = None
-    referrals: Optional[list[UserBase]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
