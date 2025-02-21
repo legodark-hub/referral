@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
+from schemas.response import BaseResponse
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -12,15 +13,18 @@ class UserCreate(UserBase):
 
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=6)
 
-class UserResponse(UserBase):
+class UserDB(UserBase):
     id: int
     created_at: datetime
     referred_by: Optional[str] = None
 
     class Config:
         from_attributes = True
+        
+class UserResponse(BaseResponse):
+    payload: UserDB
 
 class Token(BaseModel):
     access_token: str
