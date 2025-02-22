@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas.user import UserCreate, UserResponse
+from schemas.user import UserCreate, UserLogin, UserResponse
 from api.services.user import UserService
-from utils.security import get_password_hash
 
 router = APIRouter(prefix="/user")
 
@@ -23,3 +22,7 @@ async def register_user(
 
     user = await service.create_user(user_data)
     return UserResponse(payload=user)
+
+@router.post("/login")
+async def login(user_data: UserLogin, service: UserService = Depends(UserService)):
+    return await service.authenticate_user(user_data)
