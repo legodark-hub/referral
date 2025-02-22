@@ -39,7 +39,7 @@ class UserService(BaseService):
 
     @transaction_mode
     async def get_user_by_id(self, user_id: int) -> Any:
-        return await self.uow.user.get_user_by_id(user_id)
+        return await self.uow.user.get_user_by_id(int(user_id))
 
     @transaction_mode
     async def get_user_by_email(self, email: str) -> Any:
