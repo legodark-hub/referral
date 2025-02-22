@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas.user import UserCreate, UserLogin, UserResponse
+from schemas.user import Token, UserCreate, UserLogin, UserResponse
 from api.services.user import UserService
 
 router = APIRouter(prefix="/user")
@@ -25,4 +25,5 @@ async def register_user(
 
 @router.post("/login")
 async def login(user_data: UserLogin, service: UserService = Depends(UserService)):
-    return await service.authenticate_user(user_data)
+    token = await service.authenticate_user(user_data)
+    return Token(access_token=token, token_type="bearer")

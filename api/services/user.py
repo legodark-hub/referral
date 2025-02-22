@@ -35,7 +35,7 @@ class UserService(BaseService):
                 detail={"message": "Incorrect email or password"},
             )
         token = security.create_access_token(uid=str(user.id))
-        return {"access_token": token, "token_type": "bearer"}
+        return token
 
     @transaction_mode
     async def get_user_by_id(self, user_id: int) -> Any:
