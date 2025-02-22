@@ -26,13 +26,3 @@ class UserRepository(SQLAlchemyRepository):
             select(User).where(User.username == username)
         )
         return query.scalar_one_or_none()
-
-    async def update_user(self, user: User, update_data: dict) -> User:
-        for key, value in update_data.items():
-            setattr(user, key, value)
-        await self.session.commit()
-        return user
-
-    async def delete_user(self, user: User) -> None:
-        await self.session.delete(user)
-        await self.session.commit()
