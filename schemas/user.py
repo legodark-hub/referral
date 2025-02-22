@@ -18,7 +18,7 @@ class UserLogin(BaseModel):
 class UserDB(UserBase):
     id: int
     created_at: datetime
-    referred_by: Optional[str] = None
+    referrer_id: Optional[int] = None
 
     class Config:
         from_attributes = True
