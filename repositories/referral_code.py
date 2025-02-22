@@ -16,17 +16,21 @@ class ReferralCodeRepository(SQLAlchemyRepository):
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def create(self, referral_code: ReferralCode) -> ReferralCode:
+    async def create(self, referral_data: dict) -> ReferralCode:
+        referral_code = ReferralCode(**referral_data)
         self.session.add(referral_code)
         await self.session.flush()
         return referral_code
     
-    async def update(self, referral_code: ReferralCode, update_data: dict) -> ReferralCode:
-        for key, value in update_data.items():
-            setattr(referral_code, key, value)
+    async def update(self, referral_dict: dict) -> ReferralCode:
+        referral = await self.get_by_user_id(referral_dict["user_id"])
+        for key, value in referral_dict.items():
+            setattr(referral, key, value)
         await self.session.flush()
-        return referral_code
+        return referral
 
-    async def delete(self, referral_code: ReferralCode) -> None:
-        await self.session.delete(referral_code)
-        await self.session.flush()
+    async def delete(self, uid: int) -> None:
+        referral = await self.get_by_user_id(uid)
+        if referral:
+            await self.session.delete(referral)
+            await self.session.flush()
