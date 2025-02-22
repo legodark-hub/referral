@@ -12,7 +12,15 @@ class UserService(BaseService):
 
     @transaction_mode
     async def create_user(self, user_data: UserCreate) -> Any:
+        if await self.get_user_by_email(
+            user_data.email
+        ) or await self.get_user_by_username(user_data.username):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={"message": "Email or username already registered"},
+            )
         user_dict = user_data.model_dump()
+
         user_dict["password_hash"] = get_password_hash(user_dict.pop("password"))
 
         referral_code = user_dict.pop("referral_code", None)
@@ -23,7 +31,7 @@ class UserService(BaseService):
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail={"message": "Referral code not found"},
                 )
-
+            user_dict["referrer_id"] = referrer.user_id
         return await self.uow.user.create_user(user_dict)
 
     @transaction_mode
