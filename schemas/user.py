@@ -25,6 +25,9 @@ class UserDB(UserBase):
         
 class UserResponse(BaseResponse):
     payload: UserDB
+    
+class UserListResponse(BaseResponse):
+    payload: list[UserDB]
 
 class Token(BaseModel):
     access_token: str
