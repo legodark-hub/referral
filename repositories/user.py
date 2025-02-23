@@ -1,3 +1,4 @@
+from typing import Sequence
 from sqlalchemy import select
 from models.user import User
 from utils.repository import SQLAlchemyRepository
@@ -20,6 +21,12 @@ class UserRepository(SQLAlchemyRepository):
             select(User).where(User.email == email)
         )
         return query.scalar_one_or_none()
+    
+    async def get_user_referrals(self, user_id: int) -> Sequence[User] | None:
+        query = await self.session.execute(
+            select(User).where(User.referrer_id == user_id)
+        )
+        return query.scalars().all()
 
     async def get_user_by_username(self, username: str) -> User | None:
         query = await self.session.execute(

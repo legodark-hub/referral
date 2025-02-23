@@ -1,6 +1,6 @@
 from authx import TokenPayload
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas.user import Token, UserCreate, UserLogin, UserResponse
+from schemas.user import Token, UserCreate, UserListResponse, UserLogin, UserResponse
 from api.services.user import UserService
 from utils.security import security
 
@@ -29,3 +29,10 @@ async def get_me(
     payload: TokenPayload = Depends(security.access_token_required),
 ):
     return UserResponse(payload=await service.get_user_by_id(payload.sub))
+
+@router.get("/referrals", response_model=UserListResponse)
+async def get_referrals(
+    service: UserService = Depends(UserService),
+    payload: TokenPayload = Depends(security.access_token_required),
+):
+    return UserListResponse(payload=await service.get_user_referrals(payload.sub))
